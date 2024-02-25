@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class SubImgCharMatcher {
 
-    private Map<Character, Double> plainBrightnessMap;
+    private final Map<Character, Double> plainBrightnessMap;
     private Map<Character, Double> normalizedBrightnessMap;
 
     private double minBrightness = Integer.MAX_VALUE;
@@ -28,7 +28,7 @@ public class SubImgCharMatcher {
         }
 
         generateNormalizedBrightnessMap();
-        test_print();
+//       test_print();
     }
 
     public char getCharByImageBrightness(double brightness) {
@@ -67,13 +67,11 @@ public class SubImgCharMatcher {
             double normalizedBrightness = (charBrightness - minBrightness)/(maxBrightness - minBrightness);
             normalizedBrightnessMap.put(c,normalizedBrightness);
         }
-        test_print();
+//        test_print();
     }
 
-    public void removeChar(char c) {
-        //TODO: catch exceptions
+    public void removeChar(char c) throws NullPointerException  {
         double charBrightness = plainBrightnessMap.get(c);
-
         plainBrightnessMap.remove(c);
 
         if (charBrightness == minBrightness) {
@@ -91,7 +89,7 @@ public class SubImgCharMatcher {
             // based on min and max values which haven't been changed.
             normalizedBrightnessMap.remove(c);
         }
-        test_print();
+//        test_print();
     }
 
     private double findMinBrightness () {
@@ -143,14 +141,13 @@ public class SubImgCharMatcher {
         }
     }
 
-
-    ////////////////////////////////////////////////TODO: REMOVE:
-    private void test_print () {
-        System.out.println("Max brightness: " + maxBrightness);
-        System.out.println("Min brightness: " + minBrightness);
-        System.out.println("Plain:");
-        System.out.println(""+plainBrightnessMap);
-        System.out.println("Normalized:");
-        System.out.println(""+normalizedBrightnessMap);
-    }
+////////////////////////////////////////////////TODO: REMOVE:
+//    private void test_print () {
+//        System.out.println("Max brightness: " + maxBrightness);
+//        System.out.println("Min brightness: " + minBrightness);
+//        System.out.println("Plain:");
+//        System.out.println(""+plainBrightnessMap);
+//        System.out.println("Normalized:");
+//        System.out.println(""+normalizedBrightnessMap);
+//    }
 }
