@@ -28,7 +28,7 @@ public class Shell {
     public static ImageSegmenter imageSegmenter = new ImageSegmenter(resolution);
     public static AsciiArtAlgorithm asciiArtAlgorithm =
             new AsciiArtAlgorithm(imageSegmenter, imageBrightnessCalculctor, subImgCharMatcher);
-    public static void run() throws IOException {
+    public static void run() {
 
         askInput();
         while (processInput()) {
