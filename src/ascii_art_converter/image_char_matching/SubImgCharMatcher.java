@@ -45,7 +45,6 @@ public class SubImgCharMatcher {
                 minDifference = difference;
             }
         }
-
         return closestChar;
     }
 
