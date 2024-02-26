@@ -5,9 +5,8 @@ import java.awt.*;
 public class ImagePadder {
 
     public Image addPadding(Image image) {
-        System.out.println("" + image.getWidth() + " " + image.getHeight());
-        int newWidth = getBiggerOrEqualPowerOf2(image.getWidth());
-        int newHeight = getBiggerOrEqualPowerOf2(image.getHeight());
+        int newWidth = Integer.highestOneBit(image.getWidth() - 1) * 2;
+        int newHeight = Integer.highestOneBit(image.getHeight() - 1) * 2;
         Color[][] newPixelArray = new Color[newHeight][newWidth];
 
         for (int i = 0; i < newHeight; i++) {
@@ -25,15 +24,5 @@ public class ImagePadder {
         }
 
         return new Image(newPixelArray, newWidth, newHeight);
-    }
-
-    private int getBiggerOrEqualPowerOf2(int num) {
-        int power = 2;
-
-        while (power < num) {
-            power*=2;
-        }
-
-        return power;
     }
 }
