@@ -23,13 +23,11 @@ public class AsciiArtAlgorithm {
     }
 
     public char [][] run(String imagePath) throws IOException {
+        // where exception may be thrown
         Image[][] segmentedImage = imageSegmenter.getSegmentedImage(imagePath);
         double[][] segmentedImageBrightness = imageBrightnessCalculctor.calculateBrightness(segmentedImage);
 
-//        System.out.println(Arrays.deepToString(segmentedImageBrightness));
-
         char[][] asciiArt = new char[segmentedImageBrightness.length][segmentedImageBrightness[0].length];
-
 
         for (int row = 0; row < asciiArt.length; row++) {
             for (int col = 0; col < asciiArt[0].length; col++) {

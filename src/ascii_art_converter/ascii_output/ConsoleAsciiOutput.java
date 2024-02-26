@@ -8,9 +8,9 @@ package ascii_art_converter.ascii_output;
 public class ConsoleAsciiOutput implements AsciiOutput {
     @Override
     public void out(char[][] chars) {
-        for (int y = 0; y < chars.length; y++) {
-            for (int x = 0; x < chars[y].length; x++) {
-                System.out.print(chars[y][x] + " ");
+        for (char[] aChar : chars) {
+            for (char c : aChar) {
+                System.out.print(c + " ");
             }
             System.out.println();
         }

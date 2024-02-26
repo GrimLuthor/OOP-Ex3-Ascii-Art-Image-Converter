@@ -2,6 +2,7 @@ package ascii_art_converter.image_char_matching;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class SubImgCharMatcher {
 
@@ -28,7 +29,6 @@ public class SubImgCharMatcher {
         }
 
         generateNormalizedBrightnessMap();
-//       test_print();
     }
 
     public char getCharByImageBrightness(double brightness) {
@@ -49,6 +49,9 @@ public class SubImgCharMatcher {
     }
 
     public void addChar(char c) {
+        if (plainBrightnessMap.containsKey(c)) {
+            return;
+        }
         double charBrightness = calculatePlainCharBrightness(c);
 
         plainBrightnessMap.put(c,charBrightness);
@@ -64,7 +67,7 @@ public class SubImgCharMatcher {
         else {
             // if the plain char brightness is in the range, then there is no need to normalize the map again.
             double normalizedBrightness = (charBrightness - minBrightness)/(maxBrightness - minBrightness);
-            normalizedBrightnessMap.put(c,normalizedBrightness);
+            normalizedBrightnessMap.put(c, normalizedBrightness);
         }
 //        test_print();
     }
@@ -140,7 +143,18 @@ public class SubImgCharMatcher {
         }
     }
 
-////////////////////////////////////////////////TODO: REMOVE:
+    public char[] getCharset() {
+        Set<Character> charSet = plainBrightnessMap.keySet();
+        char[] charset = new char[charSet.size()];
+        int i = 0;
+        for (char c : charSet) {
+            charset[i] = c;
+            i++;
+        }
+        return charset;
+    }
+
+    ////////////////////////////////////////////////TODO: REMOVE:
 //    private void test_print () {
 //        System.out.println("Max brightness: " + maxBrightness);
 //        System.out.println("Min brightness: " + minBrightness);
