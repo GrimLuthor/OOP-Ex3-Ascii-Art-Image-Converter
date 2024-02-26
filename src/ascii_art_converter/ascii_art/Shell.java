@@ -15,7 +15,7 @@ public class Shell {
 
         char[] charset = new char[] {'.','-','*','&','+','a','A','b','B','c','C','v','@','1','0','8'};
 
-        ImageSegmenter imageSegmenter = new ImageSegmenter(512);
+        ImageSegmenter imageSegmenter = new ImageSegmenter(256);
         ImageBrightnessCalculctor imageBrightnessCalculctor = new ImageBrightnessCalculctor();
         SubImgCharMatcher subImgCharMatcher = new SubImgCharMatcher(charset);
 

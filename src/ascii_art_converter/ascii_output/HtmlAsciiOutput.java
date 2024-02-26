@@ -3,6 +3,7 @@ package ascii_art_converter.ascii_output;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 /**
@@ -25,7 +26,7 @@ public class HtmlAsciiOutput implements AsciiOutput {
     @Override
     public void out(char[][] chars) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
-            writer.write(String.format(
+            writer.write(String.format(Locale.US,
                     "<!DOCTYPE html>\n" +
                             "<html>\n" +
                             "<body style=\"" +
