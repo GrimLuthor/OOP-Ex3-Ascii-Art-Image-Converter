@@ -2,34 +2,28 @@ package ascii_art_converter.ascii_art;
 
 import ascii_art_converter.image.Image;
 import ascii_art_converter.image.ImageBrightnessCalculctor;
-import ascii_art_converter.image.ImagePadder;
 import ascii_art_converter.image.ImageSegmenter;
 import ascii_art_converter.image_char_matching.SubImgCharMatcher;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 public class AsciiArtAlgorithm {
-    private String imagePath;
-    private int resolution;
-    private char[] charSet;
 
+    private final ImageSegmenter imageSegmenter;
+    private final ImageBrightnessCalculctor imageBrightnessCalculctor;
+    private final SubImgCharMatcher subImgCharMatcher;
 
-    public AsciiArtAlgorithm (String imagePath, int resolution, char[] charSet) {
-        this.imagePath = imagePath;
-        this.charSet = charSet;
-        this.resolution = resolution;
+    public AsciiArtAlgorithm (ImageSegmenter imageSegmenter,
+                              ImageBrightnessCalculctor imageBrightnessCalculctor,
+                              SubImgCharMatcher subImgCharMatcher) {
+
+        this.imageSegmenter = imageSegmenter;
+        this.imageBrightnessCalculctor = imageBrightnessCalculctor;
+        this.subImgCharMatcher = subImgCharMatcher;
     }
 
-    public char [][] run() throws IOException {
-        ImagePadder imagePadder = new ImagePadder();
-        ImageSegmenter imageSegmenter = new ImageSegmenter();
-        ImageBrightnessCalculctor imageBrightnessCalculctor = new ImageBrightnessCalculctor();
-        SubImgCharMatcher subImgCharMatcher = new SubImgCharMatcher(charSet);
-
-        Image paddedImage = imagePadder.addPadding(new Image(imagePath));
-
-        Image[][] segmentedImage = imageSegmenter.segmentImage(paddedImage,resolution);
+    public char [][] run(String imagePath) throws IOException {
+        Image[][] segmentedImage = imageSegmenter.getSegmentedImage(imagePath);
         double[][] segmentedImageBrightness = imageBrightnessCalculctor.calculateBrightness(segmentedImage);
 
 //        System.out.println(Arrays.deepToString(segmentedImageBrightness));
