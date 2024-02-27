@@ -19,13 +19,9 @@ public class ImageSegmenter {
 
         if (segmentedImageCash.containsKey(imagePath)) {
             if (segmentedImageCash.get(imagePath).containsKey(resolution)) {
-                System.out.println("Old but gold");
-
                 return segmentedImageCash.get(imagePath).get(resolution);
             }
             else {
-                System.out.println("New resolution for old image");
-
                 // where exception may be thrown
                 Image[][] segmentedImage = segmentImage(imagePath, resolution);
                 segmentedImageCash.get(imagePath).put(resolution, segmentedImage);
@@ -33,8 +29,6 @@ public class ImageSegmenter {
             }
         }
         else {
-            System.out.println("New image");
-
             segmentedImageCash.put(imagePath,new HashMap<>());
             // where exception may be thrown
             Image[][] segmentedImage = segmentImage(imagePath,resolution);

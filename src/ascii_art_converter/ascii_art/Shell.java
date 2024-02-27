@@ -3,196 +3,187 @@ package ascii_art_converter.ascii_art;
 import ascii_art_converter.ascii_output.AsciiOutput;
 import ascii_art_converter.ascii_output.ConsoleAsciiOutput;
 import ascii_art_converter.ascii_output.HtmlAsciiOutput;
-import ascii_art_converter.image.Image;
-import ascii_art_converter.image.ImageBrightnessCalculctor;
+import ascii_art_converter.image.ImageBrightnessCalculator;
 import ascii_art_converter.image.ImageSegmenter;
 import ascii_art_converter.image_char_matching.SubImgCharMatcher;
 
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+
+import static ascii_art_converter.ascii_art.Constants.*;
 
 public class Shell {
 
-    public static final AsciiOutput HTML_OUT = new HtmlAsciiOutput("out.html","Courier New");
-    public static final AsciiOutput CONSOLE_OUT = new ConsoleAsciiOutput();
-    public static char[] charset = {'0','1','2','3','4','5','6','7','8','9'};
-    public static String imagePath = "cat.jpeg";
-    public static boolean printToConsole = true;
-    public static String input = "";
-    public static int resolution = 128;
-    public static ImageBrightnessCalculctor imageBrightnessCalculctor = new ImageBrightnessCalculctor();
-    public static SubImgCharMatcher subImgCharMatcher = new SubImgCharMatcher(charset);
-    public static ImageSegmenter imageSegmenter = new ImageSegmenter(resolution);
-    public static AsciiArtAlgorithm asciiArtAlgorithm =
-            new AsciiArtAlgorithm(imageSegmenter, imageBrightnessCalculctor, subImgCharMatcher);
+    public static final AsciiOutput HTML = new HtmlAsciiOutput(HTML_OUT_FILE, DEFAULT_FONT);
+    public static final AsciiOutput CONSOLE = new ConsoleAsciiOutput();
+    public static boolean printToConsole = DEFAULT_PRINT_TO_CONSOLE;
+    public static String imagePath = DEFAULT_IMAGE_PATH;
+    public static int resolution = DEFAULT_RESOLUTION;
+    public static SubImgCharMatcher subImgCharMatcher;
+    public static AsciiArtAlgorithm asciiArtAlgorithm;
+
     public static void run() {
-
-        askInput();
-        while (processInput()) {
-            askInput();
+        initAsciiAlg();
+        String input = askInput();
+        while (processInput(input)) {
+            input = askInput();
         }
     }
-    private static void askInput() {
-        System.out.print(">>> ");
-        input = KeyboardInput.readLine();
+
+    private static String askInput() {
+        System.out.print(INPUT_MESSAGE);
+        return KeyboardInput.readLine();
     }
 
-    private static boolean processInput() {
-        if (input.split(" ").length > 2) {
-            // TODO: throw exception
-            return true;
-        }
+    private static boolean processInput(String input) {
         String command = input.split(" ")[0];
         String arg = input.split(" ").length == 2 ? input.split(" ")[1] : "";
         switch (command) {
-            case "exit":
-                if(input.equals("exit")) {
-                    return false;
-                }
             case "chars":
-                for (char c : subImgCharMatcher.getCharset()) {
-                    System.out.print(c + " ");
-                }
-                System.out.println();
+                printCharSet();
                 break;
             case "add":
-                if (!addChar(arg)) {
-                    System.out.println("Did not add due to incorrect format.");
-                }
+                addChar(arg);
                 break;
             case "remove":
-                if (!removeChar(arg)) {
-                    System.out.println("Did not remove due to incorrect format.");
-                }
+                removeChar(arg);
                 break;
             case "res":
+                // TODO: add resolution change
                 break;
             case "image":
-                try {   // check if path is valid
-                    ImageIO.read(new File(arg));
-                } catch (IOException e) {
-                    System.out.println("Did not execute due to problem with image file.");
-                    break;
-                }
-                imagePath = arg;
+                changeImage(arg);
                 break;
             case "output":
-                if (arg.equals("console")) {
-                    printToConsole = true;
-                }
-                else if (arg.equals("html")) {
-                    printToConsole = false;
-                }
-                else {
-                    // TODO: throw exception
-                }
+                changeOutput(arg);
                 break;
             case "asciiArt":
                 generateAsciiArt();
                 break;
             default:
-                // TODO: throw exception
+                if (input.equals("exit")) {
+                    return false;
+                } else {
+                    System.out.println("Did not execute due to incorrect format.");
+                }
         }
         return true;
     }
 
+    private static void initAsciiAlg() {
+        subImgCharMatcher = new SubImgCharMatcher(DEFAULT_CHAR_SET);
+        ImageBrightnessCalculator imageBrightnessCalculator = new ImageBrightnessCalculator();
+        ImageSegmenter imageSegmenter = new ImageSegmenter(resolution);
+        asciiArtAlgorithm =
+                new AsciiArtAlgorithm(imageSegmenter, imageBrightnessCalculator, subImgCharMatcher);
+    }
+
+    private static void printCharSet() {
+        for (char c : subImgCharMatcher.getCharset()) {
+            System.out.print(c + " ");
+        }
+        System.out.println();
+    }
+
+    private static void addChar(String arg) {
+        if (arg.equals("all")) {
+            for (char c = ASCII_START; c < ASCII_END; c++) {
+                subImgCharMatcher.addChar(c);
+            }
+        } else if (arg.equals("space")) {
+            subImgCharMatcher.addChar(' ');
+        } else if (arg.length() == 1) {
+            if (charIsValid(arg.charAt(0))) {
+                subImgCharMatcher.addChar(arg.charAt(0));
+            } else {
+                System.out.println(ADD_FAIL_MESSAGE);
+            }
+        } else if (arg.length() == 3) {
+            if (arg.charAt(1) == '-') {
+                char first = (char) Math.min(arg.charAt(0), arg.charAt(2));
+                char second = (char) Math.max(arg.charAt(0), arg.charAt(2));
+                if (charIsValid(first) && charIsValid(second)) {
+                    for (char c = first; c <= second; c++) {
+                        subImgCharMatcher.addChar(c);
+                    }
+                } else {
+                    System.out.println(ADD_FAIL_MESSAGE);
+                }
+            }
+        }
+    }
+
+    private static void removeChar(String arg) {
+        if (arg.equals("all")) {
+            for (char c = ASCII_START; c < ASCII_END; c++) {
+                subImgCharMatcher.removeChar(c);
+            }
+        } else if (arg.equals("space")) {
+            subImgCharMatcher.removeChar(' ');
+        } else if (arg.length() == 1) {
+            if (charIsValid(arg.charAt(0))) {
+                subImgCharMatcher.removeChar(arg.charAt(0));
+            } else {
+                System.out.println(REMOVE_FAIL_MESSAGE);
+            }
+        } else if (arg.length() == 3) {
+            if (arg.charAt(1) == '-') {
+                char first = (char) Math.min(arg.charAt(0), arg.charAt(2));
+                char second = (char) Math.max(arg.charAt(0), arg.charAt(2));
+                if (charIsValid(first) && charIsValid(second)) {
+                    for (char c = first; c <= second; c++) {
+                        subImgCharMatcher.removeChar(c);
+                    }
+                } else {
+                    System.out.println(REMOVE_FAIL_MESSAGE);
+                }
+            }
+        }
+    }
+
+    private static boolean charIsValid(char c) {
+        return c >= ASCII_START && c < ASCII_END;
+    }
+
+    private static void changeImage(String arg) {
+        try {   // check if path is valid
+            ImageIO.read(new File(arg));
+        } catch (IOException e) {
+            System.out.println(IMAGE_FAIL_MESSAGE);
+            return;
+        }
+        imagePath = arg;
+    }
+
+    private static void changeOutput(String arg) {
+        if (arg.equals("console")) {
+            printToConsole = true;
+        } else if (arg.equals("html")) {
+            printToConsole = false;
+        } else {
+            System.out.println(OUTPUT_FAIL_MESSAGE);
+        }
+    }
+
     private static void generateAsciiArt() {
         if (subImgCharMatcher.getCharset().length == 0) {
-            System.out.println("Did not execute. Charset is empty.");
+            System.out.println(CHAR_SET_EMPTY_MESSAGE);
             return;
         }
         try {
             char[][] asciiArt = asciiArtAlgorithm.run(imagePath);
             if (printToConsole) {
-                CONSOLE_OUT.out(asciiArt);
-            }
-            else {
-                HTML_OUT.out(asciiArt);
+                CONSOLE.out(asciiArt);
+            } else {
+                HTML.out(asciiArt);
             }
         } catch (IOException e) {
-            System.out.println("Did not execute due to problem with image file.");
+            System.out.println(IMAGE_FAIL_MESSAGE);
         }
     }
 
-    private static boolean addChar(String arg){
-        if (arg.equals("all")) {
-            for (char c = 32; c < 127; c++) {
-                subImgCharMatcher.addChar(c);
-            }
-        }
-        if (arg.equals("space")) {
-            subImgCharMatcher.addChar(' ');
-        }
-        if (arg.length() == 1) {
-            if (charIsValid(arg.charAt(0))) {
-                subImgCharMatcher.addChar(arg.charAt(0));
-            }
-            else {
-                // TODO: throw exception
-                return false;
-            }
-        }
-        if (arg.length() == 3) {
-            if (arg.charAt(1) == '-') {
-                char first  = (char) Math.min(arg.charAt(0),arg.charAt(2));
-                char second = (char) Math.max(arg.charAt(0),arg.charAt(2));
-                if (charIsValid(first) && charIsValid(second)) {
-                    for (char c = first; c <= second; c++) {
-                        subImgCharMatcher.addChar(c);
-                    }
-                }
-                else {
-                    // TODO: throw exception
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    private static boolean removeChar(String arg){
-        if (arg.equals("all")) {
-            for (char c = 32; c < 127; c++) {
-                subImgCharMatcher.removeChar(c);
-            }
-        }
-        if (arg.equals("space")) {
-            subImgCharMatcher.removeChar(' ');
-        }
-        if (arg.length() == 1) {
-            if (charIsValid(arg.charAt(0))) {
-                subImgCharMatcher.removeChar(arg.charAt(0));
-            }
-            else {
-                // TODO: throw exception
-                return false;
-            }
-        }
-        if (arg.length() == 3) {
-            if (arg.charAt(1) == '-') {
-                char first  = (char) Math.min(arg.charAt(0),arg.charAt(2));
-                char second = (char) Math.max(arg.charAt(0),arg.charAt(2));
-                if (charIsValid(first) && charIsValid(second)) {
-                    for (char c = first; c <= second; c++) {
-                        subImgCharMatcher.removeChar(c);
-                    }
-                }
-                else {
-                    // TODO: throw exception
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public static boolean charIsValid(char c) {
-        return c >= 32 && c < 127;
-    }
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         run();
     }
 }

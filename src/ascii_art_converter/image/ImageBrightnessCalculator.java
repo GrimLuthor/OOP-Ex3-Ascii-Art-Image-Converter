@@ -1,9 +1,10 @@
 package ascii_art_converter.image;
 
 import java.awt.*;
-import java.io.IOException;
 
-public class ImageBrightnessCalculctor {
+import ascii_art_converter.ascii_art.Constants;
+
+public class ImageBrightnessCalculator {
 
     public double calculateSegmentBrightness(Image image) {
         double brightness = 0;
@@ -12,7 +13,7 @@ public class ImageBrightnessCalculctor {
                 brightness += grayScale(image.getPixel(i, j));
             }
         }
-        brightness = (brightness / (image.getHeight() * image.getWidth())) / 255;
+        brightness = (brightness / (image.getHeight() * image.getWidth())) / Constants.RGB_MAX;
         return brightness;
     }
 
@@ -30,6 +31,8 @@ public class ImageBrightnessCalculctor {
     }
 
     private static double grayScale(Color color) {
-        return color.getRed() * 0.2126 + color.getGreen() * 0.7152 + color.getBlue() * 0.0722;
+        return color.getGreen() * Constants.GREEN_COEFFICIENT +
+               color.getBlue()  * Constants.BLUE_COEFFICIENT +
+               color.getRed()   * Constants.RED_COEFFICIENT;
     }
 }
