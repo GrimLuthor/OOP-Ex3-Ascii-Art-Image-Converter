@@ -73,6 +73,9 @@ public class SubImgCharMatcher {
     }
 
     public void removeChar(char c) throws NullPointerException  {
+        if (!plainBrightnessMap.containsKey(c)) {
+            return;
+        }
         double charBrightness = plainBrightnessMap.get(c);
         plainBrightnessMap.remove(c);
 
