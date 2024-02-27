@@ -110,6 +110,9 @@ public class Shell {
                 }
             }
         }
+        else {
+            System.out.println(ADD_FAIL_MESSAGE);
+        }
     }
 
     private static void removeChar(String arg) {
@@ -137,6 +140,9 @@ public class Shell {
                     System.out.println(REMOVE_FAIL_MESSAGE);
                 }
             }
+        }
+        else {
+            System.out.println(REMOVE_FAIL_MESSAGE);
         }
     }
 
