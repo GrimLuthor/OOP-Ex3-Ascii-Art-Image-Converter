@@ -25,10 +25,8 @@ public class Shell {
 
     public static void run() {
         initAsciiAlg();
-        String input = askInput();
-        while (processInput(input)) {
-            input = askInput();
-        }
+
+        while (processInput(askInput()));
     }
 
     private static String askInput() {
