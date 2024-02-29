@@ -8,6 +8,9 @@ public class Constants {
     public static final char[] DEFAULT_CHAR_SET    = {'0','1','2','3','4','5','6','7','8','9'};
     public static final String OUTPUT_FAIL_MESSAGE = "Did not change output method due to incorrect format.";
     public static final String IMAGE_FAIL_MESSAGE  = "Did not execute due to problem with image file.";
+    public static final String RES_MODIFY_FAIL_MESSAGE = "Did not change resolution due to exceeding " +
+            "boundaries.";
+    public static final String RES_FORMAT_FAIL_MESSAGE = "Did not change resolution due to incorrect format";
     public static final String REMOVE_FAIL_MESSAGE = "Did not remove due to incorrect format.";
     public static final String CHAR_SET_EMPTY_MESSAGE = "Did not execute. Charset is empty.";
     public static final String ADD_FAIL_MESSAGE    = "Did not add due to incorrect format.";

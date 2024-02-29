@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class ImageSegmenter {
 
-    private final Map<String,Map<Integer,Image[][]>> segmentedImageCash;
+    private final Map<String, Map<Integer, Image[][]>> segmentedImageCash;
     private int resolution;
 
     public ImageSegmenter(int resolution) {
@@ -16,29 +16,28 @@ public class ImageSegmenter {
     }
 
     public Image[][] getSegmentedImage(String imagePath) throws IOException {
-
+        // if we already have some segmented image of this image path in cash:
         if (segmentedImageCash.containsKey(imagePath)) {
+            // if the segmented image is of the same resolution:
             if (segmentedImageCash.get(imagePath).containsKey(resolution)) {
                 return segmentedImageCash.get(imagePath).get(resolution);
-            }
-            else {
-                // where exception may be thrown
+            } else {
+                // create segmented image of this resolution and save under the image path key sub-map
                 Image[][] segmentedImage = segmentImage(imagePath, resolution);
                 segmentedImageCash.get(imagePath).put(resolution, segmentedImage);
                 return segmentedImage;
             }
-        }
-        else {
-            segmentedImageCash.put(imagePath,new HashMap<>());
-            // where exception may be thrown
-            Image[][] segmentedImage = segmentImage(imagePath,resolution);
-            segmentedImageCash.get(imagePath).put(resolution,segmentedImage);
+        } else {
+            // create new segmented image and register new path:
+            segmentedImageCash.put(imagePath, new HashMap<>());
+            Image[][] segmentedImage = segmentImage(imagePath, resolution);
+            segmentedImageCash.get(imagePath).put(resolution, segmentedImage);
 
             return segmentedImage;
         }
     }
 
-    private Image[][] segmentImage (String imagePath, int resolution) throws IOException {
+    private Image[][] segmentImage(String imagePath, int resolution) throws IOException {
         ImagePadder imagePadder = new ImagePadder();
         Image image = imagePadder.addPadding(new Image(imagePath));
 
@@ -46,19 +45,19 @@ public class ImageSegmenter {
             throw new IOException("resolution is too high for the image");
         }
         Image[][] subImages = new Image[resolution][resolution];
-        int subImageWidth = image.getWidth() / resolution;
+        int subImageSize = image.getWidth() / resolution;
 
-        for (int i = 0; i < image.getHeight() / subImageWidth; i++) {
+        for (int i = 0; i < image.getHeight() / subImageSize; i++) {
             for (int j = 0; j < resolution; j++) {
-                Color[][] subPixelArray = new Color[subImageWidth][subImageWidth];
-                for (int x = 0; x < subImageWidth; x++) {
-                    for (int y = 0; y < subImageWidth; y++) {
+                Color[][] subPixelArray = new Color[subImageSize][subImageSize];
+                for (int x = 0; x < subImageSize; x++) {
+                    for (int y = 0; y < subImageSize; y++) {
                         subPixelArray[x][y] =
-                                image.getPixel(i * subImageWidth + y, j * subImageWidth + x);
+                                image.getPixel(i * subImageSize + y, j * subImageSize + x);
                     }
                 }
 
-                subImages[i][j] = new Image(subPixelArray, subImageWidth, subImageWidth);
+                subImages[i][j] = new Image(subPixelArray, subImageSize, subImageSize);
             }
         }
 

@@ -8,6 +8,7 @@ import ascii_art_converter.image.ImageSegmenter;
 import ascii_art_converter.image_char_matching.SubImgCharMatcher;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -15,18 +16,18 @@ import static ascii_art_converter.ascii_art.Constants.*;
 
 public class Shell {
 
-    public static final AsciiOutput HTML = new HtmlAsciiOutput(HTML_OUT_FILE, DEFAULT_FONT);
-    public static final AsciiOutput CONSOLE = new ConsoleAsciiOutput();
-    public static boolean printToConsole = DEFAULT_PRINT_TO_CONSOLE;
-    public static String imagePath = DEFAULT_IMAGE_PATH;
-    public static int resolution = DEFAULT_RESOLUTION;
-    public static SubImgCharMatcher subImgCharMatcher;
-    public static AsciiArtAlgorithm asciiArtAlgorithm;
+    private static final AsciiOutput HTML = new HtmlAsciiOutput(HTML_OUT_FILE, DEFAULT_FONT);
+    private static final AsciiOutput CONSOLE = new ConsoleAsciiOutput();
+    private static boolean printToConsole = DEFAULT_PRINT_TO_CONSOLE;
+    private static String imagePath = DEFAULT_IMAGE_PATH;
+    private static SubImgCharMatcher subImgCharMatcher;
+    private static ImageSegmenter imageSegmenter;
+    private static AsciiArtAlgorithm asciiArtAlgorithm;
 
     public static void run() {
         initAsciiAlg();
 
-        while (processInput(askInput()));
+        while (processInput(askInput())) ;
     }
 
     private static String askInput() {
@@ -48,7 +49,7 @@ public class Shell {
                 removeChar(arg);
                 break;
             case "res":
-                // TODO: add resolution change
+                changeResolution(arg);
                 break;
             case "image":
                 changeImage(arg);
@@ -69,10 +70,37 @@ public class Shell {
         return true;
     }
 
+    private static void changeResolution(String arg) {
+        if (!arg.equals("up") && !arg.equals("down")) {
+            System.out.println(RES_FORMAT_FAIL_MESSAGE);
+            return;
+        }
+
+        try {
+            BufferedImage im = ImageIO.read(new File(imagePath));
+            int width = im.getWidth();
+            int height = im.getHeight();
+
+            int currentRes = imageSegmenter.getResolution();
+
+            if (arg.equals("up") && currentRes * 2 <= width) {
+                imageSegmenter.setResolution(currentRes * 2);
+            } else if (arg.equals("down") && currentRes / 2 >= Math.max(1, width / height)) {
+                imageSegmenter.setResolution(currentRes / 2);
+            } else {
+                System.out.println(RES_MODIFY_FAIL_MESSAGE);
+            }
+
+        } catch (IOException e) {
+            System.out.println(IMAGE_FAIL_MESSAGE);
+        }
+    }
+
+
     private static void initAsciiAlg() {
         subImgCharMatcher = new SubImgCharMatcher(DEFAULT_CHAR_SET);
         ImageBrightnessCalculator imageBrightnessCalculator = new ImageBrightnessCalculator();
-        ImageSegmenter imageSegmenter = new ImageSegmenter(resolution);
+        imageSegmenter = new ImageSegmenter(DEFAULT_RESOLUTION);
         asciiArtAlgorithm =
                 new AsciiArtAlgorithm(imageSegmenter, imageBrightnessCalculator, subImgCharMatcher);
     }
@@ -109,8 +137,7 @@ public class Shell {
                     System.out.println(ADD_FAIL_MESSAGE);
                 }
             }
-        }
-        else {
+        } else {
             System.out.println(ADD_FAIL_MESSAGE);
         }
     }
@@ -140,8 +167,7 @@ public class Shell {
                     System.out.println(REMOVE_FAIL_MESSAGE);
                 }
             }
-        }
-        else {
+        } else {
             System.out.println(REMOVE_FAIL_MESSAGE);
         }
     }

@@ -32,7 +32,7 @@ public class ImageBrightnessCalculator {
 
     private static double grayScale(Color color) {
         return color.getGreen() * Constants.GREEN_COEFFICIENT +
-               color.getBlue()  * Constants.BLUE_COEFFICIENT +
-               color.getRed()   * Constants.RED_COEFFICIENT;
+                color.getBlue() * Constants.BLUE_COEFFICIENT +
+                color.getRed() * Constants.RED_COEFFICIENT;
     }
 }

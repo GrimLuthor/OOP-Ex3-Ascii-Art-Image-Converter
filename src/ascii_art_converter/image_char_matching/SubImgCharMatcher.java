@@ -25,7 +25,7 @@ public class SubImgCharMatcher {
             if (charBrightness < minBrightness) {
                 minBrightness = charBrightness;
             }
-            plainBrightnessMap.put(c,charBrightness);
+            plainBrightnessMap.put(c, charBrightness);
         }
 
         generateNormalizedBrightnessMap();
@@ -54,25 +54,22 @@ public class SubImgCharMatcher {
         }
         double charBrightness = calculatePlainCharBrightness(c);
 
-        plainBrightnessMap.put(c,charBrightness);
+        plainBrightnessMap.put(c, charBrightness);
 
         if (charBrightness > maxBrightness) {
             maxBrightness = charBrightness;
             generateNormalizedBrightnessMap();
-        }
-        else if (charBrightness < minBrightness) {
+        } else if (charBrightness < minBrightness) {
             minBrightness = charBrightness;
             generateNormalizedBrightnessMap();
-        }
-        else {
+        } else {
             // if the plain char brightness is in the range, then there is no need to normalize the map again.
-            double normalizedBrightness = (charBrightness - minBrightness)/(maxBrightness - minBrightness);
+            double normalizedBrightness = (charBrightness - minBrightness) / (maxBrightness - minBrightness);
             normalizedBrightnessMap.put(c, normalizedBrightness);
         }
-//        test_print();
     }
 
-    public void removeChar(char c) throws NullPointerException  {
+    public void removeChar(char c) throws NullPointerException {
         if (!plainBrightnessMap.containsKey(c)) {
             return;
         }
@@ -83,21 +80,18 @@ public class SubImgCharMatcher {
             minBrightness = findMinBrightness();
             generateNormalizedBrightnessMap();
             // no need to remove since it's generated based on plain brightness from which we already removed.
-        }
-        else if (charBrightness == maxBrightness) {
+        } else if (charBrightness == maxBrightness) {
             maxBrightness = findMaxBrightness();
             generateNormalizedBrightnessMap();
             // no need to remove since it's generated based on plain brightness from which we already removed.
-        }
-        else {
+        } else {
             // we can remove from normalized map with no need to generate new map since normalization is
             // based on min and max values which haven't been changed.
             normalizedBrightnessMap.remove(c);
         }
-//        test_print();
     }
 
-    private double findMinBrightness () {
+    private double findMinBrightness() {
         double minBrightness = Double.MAX_VALUE;
 
         for (double brightness : plainBrightnessMap.values()) {
@@ -108,7 +102,7 @@ public class SubImgCharMatcher {
         return minBrightness;
     }
 
-    private double findMaxBrightness () {
+    private double findMaxBrightness() {
         double maxBrightness = Double.MIN_VALUE;
 
         for (double brightness : plainBrightnessMap.values()) {
@@ -141,8 +135,8 @@ public class SubImgCharMatcher {
         normalizedBrightnessMap = new HashMap<>();
 
         for (Map.Entry<Character, Double> entry : plainBrightnessMap.entrySet()) {
-            double newBrightness = (entry.getValue() - minBrightness)/(maxBrightness - minBrightness);
-            normalizedBrightnessMap.put(entry.getKey(),newBrightness);
+            double newBrightness = (entry.getValue() - minBrightness) / (maxBrightness - minBrightness);
+            normalizedBrightnessMap.put(entry.getKey(), newBrightness);
         }
     }
 
@@ -156,14 +150,4 @@ public class SubImgCharMatcher {
         }
         return charset;
     }
-
-    ////////////////////////////////////////////////TODO: REMOVE:
-//    private void test_print () {
-//        System.out.println("Max brightness: " + maxBrightness);
-//        System.out.println("Min brightness: " + minBrightness);
-//        System.out.println("Plain:");
-//        System.out.println(""+plainBrightnessMap);
-//        System.out.println("Normalized:");
-//        System.out.println(""+normalizedBrightnessMap);
-//    }
 }

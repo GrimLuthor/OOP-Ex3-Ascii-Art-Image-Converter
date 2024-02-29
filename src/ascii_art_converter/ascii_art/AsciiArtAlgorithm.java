@@ -13,17 +13,16 @@ public class AsciiArtAlgorithm {
     private final ImageBrightnessCalculator imageBrightnessCalculator;
     private final SubImgCharMatcher subImgCharMatcher;
 
-    public AsciiArtAlgorithm (ImageSegmenter imageSegmenter,
-                              ImageBrightnessCalculator imageBrightnessCalculator,
-                              SubImgCharMatcher subImgCharMatcher) {
+    public AsciiArtAlgorithm(ImageSegmenter imageSegmenter,
+                             ImageBrightnessCalculator imageBrightnessCalculator,
+                             SubImgCharMatcher subImgCharMatcher) {
 
         this.imageSegmenter = imageSegmenter;
         this.imageBrightnessCalculator = imageBrightnessCalculator;
         this.subImgCharMatcher = subImgCharMatcher;
     }
 
-    public char [][] run(String imagePath) throws IOException {
-        // where exception may be thrown
+    public char[][] run(String imagePath) throws IOException {
         Image[][] segmentedImage = imageSegmenter.getSegmentedImage(imagePath);
         double[][] segmentedImageBrightness = imageBrightnessCalculator.calculateBrightness(segmentedImage);
 
