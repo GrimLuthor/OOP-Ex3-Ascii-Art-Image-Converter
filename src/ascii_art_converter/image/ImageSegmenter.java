@@ -44,8 +44,10 @@ public class ImageSegmenter {
         if (image.getWidth() < resolution || image.getHeight() < resolution) {
             throw new IOException("resolution is too high for the image");
         }
-        Image[][] subImages = new Image[resolution][resolution];
+
         int subImageSize = image.getWidth() / resolution;
+        Image[][] subImages = new Image[image.getHeight()/subImageSize][resolution];
+
 
         for (int i = 0; i < image.getHeight() / subImageSize; i++) {
             for (int j = 0; j < resolution; j++) {
