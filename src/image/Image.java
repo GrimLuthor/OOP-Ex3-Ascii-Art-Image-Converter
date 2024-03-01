@@ -1,4 +1,4 @@
-package ascii_art_converter.image;
+package image;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

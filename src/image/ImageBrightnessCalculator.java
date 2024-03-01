@@ -1,8 +1,8 @@
-package ascii_art_converter.image;
+package image;
 
 import java.awt.*;
 
-import ascii_art_converter.ascii_art.Constants;
+import ascii_art.Constants;
 
 /**
  * A proper clever tool for calculating brightness in images. It's all about seeing the light, innit?
@@ -15,7 +15,7 @@ public class ImageBrightnessCalculator {
      * @param image The image segment to calculate brightness for, mate.
      * @return The brightness of the image segment, right proper.
      */
-    private double calculateSegmentBrightness(Image image) {
+    private double calculateSegmentBrightness(image.Image image) {
         double brightness = 0;
         // Loop through each pixel in the image segment, calculating the brightness.
         for (int i = 0; i < image.getHeight(); i++) {

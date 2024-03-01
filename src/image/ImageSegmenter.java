@@ -1,4 +1,4 @@
-package ascii_art_converter.image;
+package image;
 
 import java.awt.*;
 import java.io.IOException;
@@ -11,9 +11,11 @@ import java.util.Map;
 public class ImageSegmenter {
 
     // A stash for keepin' segmented images handy, y'know?
-    private final Map<String, Map<Integer, Image[][]>> segmentedImageCash;
+    private final Map<String, Map<Integer, image.Image[][]>> segmentedImageCash;
     // The resolution at which we're slicin' and dicin' these images.
     private int resolution;
+    // The path of the image we're segmentin', 'cause we gotta keep track of it, right?
+    private String imagePath;
 
     /**
      * Constructs a new ImageSegmenter with the given resolution. 'Cause we gotta start somewhere, right?
@@ -29,22 +31,21 @@ public class ImageSegmenter {
      * Gets the segmented image for the given image path.
      * 'Cause why start from scratch when you've got somethin' already sliced, eh?
      *
-     * @param imagePath The path of the image to segment, innit?
      * @return The segmented image, all ready to go!
      * @throws IOException If somethin' goes pear-shaped while readin' the image, we're in a right pickle.
      */
-    public Image[][] getSegmentedImage(String imagePath) throws IOException {
+    public image.Image[][] getSegmentedImage() throws IOException {
         if (segmentedImageCash.containsKey(imagePath)) {
             if (segmentedImageCash.get(imagePath).containsKey(resolution)) {
                 return segmentedImageCash.get(imagePath).get(resolution);
             } else {
-                Image[][] segmentedImage = segmentImage(imagePath, resolution);
+                image.Image[][] segmentedImage = segmentImage(imagePath, resolution);
                 segmentedImageCash.get(imagePath).put(resolution, segmentedImage);
                 return segmentedImage;
             }
         } else {
             segmentedImageCash.put(imagePath, new HashMap<>());
-            Image[][] segmentedImage = segmentImage(imagePath, resolution);
+            image.Image[][] segmentedImage = segmentImage(imagePath, resolution);
             segmentedImageCash.get(imagePath).put(resolution, segmentedImage);
             return segmentedImage;
         }
@@ -58,12 +59,12 @@ public class ImageSegmenter {
      * @return An array of segmented images, all ready for action.
      * @throws IOException If there's a spot of bother readin' the image, we're in for a right 'mare.
      */
-    private Image[][] segmentImage(String imagePath, int resolution) throws IOException {
+    private image.Image[][] segmentImage(String imagePath, int resolution) throws IOException {
         ImagePadder imagePadder = new ImagePadder();
-        Image image = imagePadder.addPadding(new Image(imagePath));
+        image.Image image = imagePadder.addPadding(new image.Image(imagePath));
 
         int subImageSize = image.getWidth() / resolution;
-        Image[][] subImages = new Image[image.getHeight() / subImageSize][resolution];
+        image.Image[][] subImages = new image.Image[image.getHeight() / subImageSize][resolution];
 
         // Loop through each row and column of sub-images, like layin' out a grid.
         for (int i = 0; i < image.getHeight() / subImageSize; i++) {
@@ -100,5 +101,23 @@ public class ImageSegmenter {
      */
     public void setResolution(int newRes) {
         this.resolution = newRes;
+    }
+
+    /**
+     * gets the path of the image.
+     *
+     * @return The path of the image to segment, mate.
+     */
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    /**
+     * Sets the path of the image.
+     *
+     * @param newImagePath The path of the new image to segment, mate.
+     */
+    public void setImagePath(String newImagePath) {
+        this.imagePath = newImagePath;
     }
 }

@@ -1,4 +1,4 @@
-package ascii_art_converter.image_char_matching;
+package image_char_matching;
 
 import java.util.HashMap;
 import java.util.Map;

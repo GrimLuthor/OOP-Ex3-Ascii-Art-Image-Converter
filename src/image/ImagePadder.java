@@ -1,4 +1,4 @@
-package ascii_art_converter.image;
+package image;
 
 import java.awt.*;
 
@@ -14,7 +14,7 @@ public class ImagePadder {
      * @param image The image you wanna pad, innit?
      * @return A freshly padded image, ready to take on the world. Top stuff!
      */
-    public Image addPadding(Image image) {
+    public image.Image addPadding(image.Image image) {
         // Calculate the new dimensions for the padded image. 'Cos who likes a cramped image, right?
         int newWidth = Integer.highestOneBit(image.getWidth() - 1) * 2;
         int newHeight = Integer.highestOneBit(image.getHeight() - 1) * 2;

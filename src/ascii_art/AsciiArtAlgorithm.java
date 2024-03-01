@@ -1,8 +1,8 @@
-package ascii_art_converter.ascii_art;
+package ascii_art;
 
-import ascii_art_converter.image.ImageBrightnessCalculator;
-import ascii_art_converter.image.ImageSegmenter;
-import ascii_art_converter.image_char_matching.SubImgCharMatcher;
+import image.ImageBrightnessCalculator;
+import image.ImageSegmenter;
+import image_char_matching.SubImgCharMatcher;
 
 import java.io.IOException;
 
@@ -34,13 +34,12 @@ public class AsciiArtAlgorithm {
 
     /**
      * This function runs the entire ASCII art conversion process with utmost finesse!
-     * @param imagePath The path to the image file to be converted into ASCII art.
      * @return A stunning 2D array of characters representing the ASCII art.
      * @throws IOException Thrown if there's any trouble reading the image file.
      */
-    public char[][] run(String imagePath) throws IOException {
+    public char[][] run() throws IOException {
         double[][] segmentedImageBrightness =
-                imageBrightnessCalculator.calculateBrightness(imageSegmenter.getSegmentedImage(imagePath));
+                imageBrightnessCalculator.calculateBrightness(imageSegmenter.getSegmentedImage());
 
         char[][] asciiArt = new char[segmentedImageBrightness.length][segmentedImageBrightness[0].length];
 

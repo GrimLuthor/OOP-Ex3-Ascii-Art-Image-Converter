@@ -1,15 +1,16 @@
-package ascii_art_converter.ascii_art;
+package ascii_art;
 
-import ascii_art_converter.ascii_output.*;
-import ascii_art_converter.image.*;
-import ascii_art_converter.image_char_matching.SubImgCharMatcher;
+import ascii_output.HtmlAsciiOutput;
+import ascii_output.ConsoleAsciiOutput;
+import image.*;
+import image_char_matching.SubImgCharMatcher;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import static ascii_art_converter.ascii_art.Constants.*;
+import static ascii_art.Constants.*;
 
 /**
  * Greetings, esteemed ladies and gentlemen, to the grand spectacle that is the Shell class! This marvellous
@@ -18,10 +19,9 @@ import static ascii_art_converter.ascii_art.Constants.*;
  */
 public class Shell {
 
-    private static final AsciiOutput HTML = new HtmlAsciiOutput(HTML_OUT_FILE, DEFAULT_FONT);
-    private static final AsciiOutput CONSOLE = new ConsoleAsciiOutput();
+    private static final HtmlAsciiOutput HTML = new HtmlAsciiOutput(HTML_OUT_FILE, DEFAULT_FONT);
+    private static final ConsoleAsciiOutput CONSOLE = new ConsoleAsciiOutput();
     private static boolean printToConsole = DEFAULT_PRINT_TO_CONSOLE;
-    private static String imagePath = DEFAULT_IMAGE_PATH;
     private static SubImgCharMatcher subImgCharMatcher;
     private static ImageSegmenter imageSegmenter;
     private static AsciiArtAlgorithm asciiArtAlgorithm;
@@ -96,6 +96,7 @@ public class Shell {
     private static void initAsciiAlg() {
         subImgCharMatcher = new SubImgCharMatcher(DEFAULT_CHAR_SET);
         imageSegmenter = new ImageSegmenter(DEFAULT_RESOLUTION);
+        imageSegmenter.setImagePath(DEFAULT_IMAGE_PATH);
         asciiArtAlgorithm =
                 new AsciiArtAlgorithm(imageSegmenter, new ImageBrightnessCalculator(), subImgCharMatcher);
     }
@@ -196,7 +197,7 @@ public class Shell {
         }
 
         try {
-            BufferedImage im = ImageIO.read(new File(imagePath));
+            BufferedImage im = ImageIO.read(new File(imageSegmenter.getImagePath()));
             int width = im.getWidth();
             int height = im.getHeight();
             int currentRes = imageSegmenter.getResolution();
@@ -229,7 +230,7 @@ public class Shell {
             System.out.println(IMAGE_FAIL_MESSAGE);
             return;
         }
-        imagePath = arg;
+        imageSegmenter.setImagePath(arg);
     }
 
     /**
@@ -258,7 +259,7 @@ public class Shell {
             return;
         }
         try {
-            char[][] asciiArt = asciiArtAlgorithm.run(imagePath);
+            char[][] asciiArt = asciiArtAlgorithm.run();
             if (printToConsole) {  // To the console, where ASCII art dances like sprites in the moonlight!
                 CONSOLE.out(asciiArt);
             } else {               // To HTML, where ASCII art shall be enshrined for all eternity!

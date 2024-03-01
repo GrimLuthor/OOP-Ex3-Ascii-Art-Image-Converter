@@ -1,4 +1,4 @@
-package ascii_art_converter.ascii_output;
+package ascii_output;
 
 /**
  * Output a 2D array of chars to the console.
