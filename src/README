@@ -12,24 +12,24 @@ changes in provided material
 - provided to us, but generally handles the output of ascii art.
 
 * ascii_art:
-- KeyBoardInput: privided to us, recieves user inputs in a generalized way.
+- KeyBoardInput: provided to us, receives user inputs in a generalized way.
 - Constants: as the name states.
 - Shell: has the main function, implements user interface to use the algorithm.
-Uses the handler classes from package 'image', the user ajustments are made directly using
+Uses the handler classes from package 'image', the user adjustments are made directly using
 the instances of the handler classes. On demand runs AsciiAlgorithm to generate ascii art.
-Additionaly, uses the SubImgCharMatcher from image_char_matching package, to control the charachters
+Additionally, uses the SubImgCharMatcher from image_char_matching package, to control the characters
 of which the ascii art will consist.
 - AsciiAlgorithm: gets instances of handlers from Shell and uses them in order to generate ascii art.
 
 * image:
-- Iage: provided to us, defines image object.
+- Image: provided to us, defines image object.
 - ImagePadder: adds padding to a given image.
 - ImageSegmenter: segments the image and saves it in cache to reduce the runtime in case of repeated runs
-on the same image. Uses ImagePadder to segment the image knowing it has dimentions as powers of 2.
+on the same image. Uses ImagePadder to segment the image knowing it has dimensions as powers of 2.
 - ImageBrightnessCalculator: calculates the brightness map of a given segmented image utilizing the SubImgCharMatcher.
 
 * image_char_matching:
-- SubImgCharMatcher: holds the charset for ascii art creation, clasculates and keeps the chars' plain and normalized
+- SubImgCharMatcher: holds the charset for ascii art creation, calculates and keeps the chars' plain and normalized
 brightness for future use by the ImageBrightnessCalculator.
 Uses CharConverter to get the brightness of a char.
 - CharConverter: used to convert a char into an array of booleans for future brightness calculations, provided to us.
@@ -37,28 +37,28 @@ Uses CharConverter to get the brightness of a char.
 2) 
 In ImageSegmenter:
 We implemented a cache of the segmented images according to the imagePath (a string) and a sub-map for different
-resolutions (saved as string too). The data structure is charecterised by the following typing notation:
+resolutions (saved as string too). The data structure is characterised by the following typing notation:
 HashMap<String,HashMap<String,image[][]>> - Because the order of the images isn't relevant to us for any of
-our uses, we decided to use HashMap over TreeMap so retreival and addition from and to (respectively) the cache
+our uses, we decided to use HashMap over TreeMap so retrieval and addition from and to (respectively) the cache
 will be in O(1). We do use a lot of memory since it was important to us to separate even the different resolutions,
 but we deemed it worth the gain in calculation speed.
 
 In SubImgCharMatcher:
 We are saving the plain brightness with each char in a separate map from the normalized values, because the original
-brightness is needed in case of renormalization after a new charachter was added or one of them was deleted.
+brightness is needed in case of renormalization after a new character was added or one of them was deleted.
 Both of them are HashMap, we could've used a TreeMap to utilize the order of the chars by their brightness and
 find the closes needed brightness by some modification of the binary search algorithm, but since the amount of chars
-has an upper bound, the search consumes a contant runtime in worst case scenario, plus we gain the O(1) to modify the 
+has an upper bound, the search consumes a constant runtime in worst case scenario, plus we gain the O(1) to modify the
 charset.
 
-What we additionaly did to save runtime, is to renormalize the charset brightness map only when the min or max 
+What we additionally did to save runtime, is to renormalize the charset brightness map only when the min or max
 brightness are changed.
 
 3)
 Generally speaking we are catching most of the errors right away in the shell before making it an error. In case
-of opening images, we cannot control externall files and that's why we are using the built-in IOException error
+of opening images, we cannot control external files and that's why we are using the built-in IOException error
 to catch problems with image source path. To save memory and runtime we are opening and converting image files
-into objects only on algorithm application, and that's why we additionaly catching this error in other places
+into objects only on algorithm application, and that's why we additionally catching this error in other places
 if initial path correctness check failed.
 
 4)
